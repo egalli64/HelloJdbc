@@ -1,11 +1,17 @@
+/**
+ * http://thisthread.blogspot.com/2017/08/selecting-on-oracle-via-jdbc.html
+ * http://thisthread.blogspot.com/2017/08/calling-stored-function-from-jdbc.html
+ */
 package dd;
 
 import static org.junit.Assert.*;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,12 +44,12 @@ public class GettingStartedTest {
             conn = ods.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("SELECT first_name FROM employees");
-            
+
             List<String> results = new ArrayList<String>();
             while (rs.next()) {
                 results.add(rs.getString(1));
             }
-            
+
             assertEquals(107, results.size());
             Collections.sort(results);
             assertEquals("Adam", results.get(0));
@@ -57,7 +63,7 @@ public class GettingStartedTest {
 
                 assertNotNull(stmt);
                 stmt.close();
-                
+
                 assertNotNull(conn);
                 conn.close();
             } catch (SQLException e) {
@@ -65,4 +71,44 @@ public class GettingStartedTest {
             }
         }
     }
+
+    private void callFoo(String call) {
+        Connection conn = null;
+        CallableStatement cs = null;
+        try {
+            conn = ods.getConnection();
+            cs = conn.prepareCall(call);
+            cs.registerOutParameter(1, Types.CHAR);
+            cs.setString(2, "aa");
+            cs.execute();
+            String result = cs.getString(1);
+            assertEquals("aasuffix", result);
+        } catch (SQLException e) {
+            fail(e.getMessage());
+        } finally {
+            try {
+                assertNotNull(cs);
+                cs.close();
+
+                assertNotNull(conn);
+                conn.close();
+            } catch (SQLException e) {
+                fail(e.getMessage());
+            }
+
+        }
+    }
+    
+    @Test
+    public void testFunctionCallJdbcEscape() {
+        // JDBC escape syntax
+        callFoo("{? = call foo(?)");
+    }
+    
+    @Test
+    public void testFunctionCallPlSqlBlock() {
+        // PL/SQL block syntax
+        callFoo("begin ? := foo(?); end;");
+    }
+
 }
