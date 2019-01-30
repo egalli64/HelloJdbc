@@ -7,7 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
-		<!-- mvn install:install-file -Dfile={.../ojdbc8.jar} -DgroupId=com.oracle 
+		<!-- mvn install:install-file -Dfile=/.../ojdbc8.jar -DgroupId=com.oracle 
 			-DartifactId=jdbc -Dversion=8 -Dpackaging=jar -->
 		<dependency>
 			<groupId>com.oracle</groupId>
