@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class PlainConnector4OracleTest {
     // private static final String KLASS = "oracle.jdbc.driver.OracleDriver";
-    private static final String URL = "jdbc:oracle:thin:@localhost:1521/orclpdb";
+    private static final String URL = "jdbc:oracle:thin:@localhost:1521/xe";
     private static final String USER = "hr";
     private static final String PASSWORD = "hr";
 
@@ -51,7 +51,8 @@ public class PlainConnector4OracleTest {
     @Test
     public void testGetDatabaseNameVersion() {
         try {
-            String expected = "Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production";
+//            String expected = "Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production";
+            String expected = "Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production";
             String actual = connector.getDatabaseVersion(connection);
             assertEquals(expected, actual);
         } catch (SQLException e) {

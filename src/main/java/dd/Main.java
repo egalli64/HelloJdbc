@@ -2,6 +2,7 @@ package dd;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-	static private final String URL = "jdbc:oracle:thin:@localhost:1521/orclpdb";
+	static private final String URL = "jdbc:oracle:thin:@localhost:1521/xe";
 	static private final String USER = "me";
 	static private final String PASSWORD = "password";
 
@@ -22,11 +23,12 @@ public class Main {
 			selectAll(mds);
 			callMe(mds);
 			rollingBack(mds);
+			selectById(mds, 106);
 		} catch (SQLException se) {
 			se.printStackTrace();
 		}
 	}
-
+	
 	private static void selectAll(Connector mds) throws SQLException {
 		try (Connection conn = mds.getConnection(); //
 				Statement stmt = conn.createStatement()) {
@@ -41,6 +43,22 @@ public class Main {
 		}
 	}
 
+	private static void selectById(Connector mds, int id) throws SQLException {
+		try (Connection conn = mds.getConnection(); //
+				PreparedStatement prep = conn.prepareStatement("SELECT first_name FROM coders where coder_id = ? ORDER BY 1")) {
+			
+			prep.setInt(1, id);
+			ResultSet rs = prep.executeQuery();
+
+			List<String> results = new ArrayList<String>();
+			while (rs.next()) {
+				results.add(rs.getString(1));
+			}
+
+			System.out.println("Select by id: " + results);
+		}
+	}
+	
 	/**
 	 * This method assumes a procedure on the Oracle "ME" schema:
 	 * 
