@@ -20,7 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class GettingStartedTest {
-	private static final String URL = "jdbc:oracle:thin:@localhost:1521/orclpdb";
+	private static final String URL = "jdbc:oracle:thin:@localhost:1521/xe";
 	private static final String USER = "hr";
 	private static final String PASSWORD = "hr";
 
@@ -120,7 +120,7 @@ public class GettingStartedTest {
 	@Test
 	public void testFunctionCallJdbcEscape() {
 		// JDBC escape syntax
-		callFoo("{? = call foo(?)");
+		callFoo("{? = call foo(?)}");
 	}
 
 	@Test
